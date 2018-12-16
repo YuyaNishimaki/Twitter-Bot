@@ -20,14 +20,15 @@ def connect_qiita(uid, page, ppage):
 
 
 def get_url(response):
-    # print(res.status, res.reason)
+    # print(response.status, response.reason)
     data = response.read().decode("utf-8")
     jsonstr = json.loads(data)
+    # print(json.dumps(jsonstr, indent=4))
     url = jsonstr[0]["url"]
     return url
 
 
-def main():
+def connect_twitter():
     t = Twitter(
         auth=OAuth(
             config.TW_TOKEN,
@@ -36,17 +37,23 @@ def main():
             config.TW_CONSUMER_SECRET,
         )
     )
+    return t
 
+
+def tweet(message):
+    t = connect_twitter()
+    t.statuses.update(status=message)
+
+
+def main():
     USER_ID = "macky4"
-    ITEM_NUM = 10
     PAGE = "1"
     PAR_PAGE = "10"
 
     response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
     url = get_url(response)
-
-    # msg = "テスト投稿ですm(_ _)m"
-    # t.statuses.update(status=msg)
+    msg = url
+    tweet(msg)
 
 
 if __name__ == "__main__":
