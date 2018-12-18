@@ -4,6 +4,7 @@ import http.client
 import json
 import datetime
 import pathlib
+from time import sleep
 
 
 def connect_qiita(uid, page, ppage):
@@ -30,19 +31,18 @@ def load_user_ids():
     return user_ids
 
 
-def get_urls(response):
-    data = response.read().decode("utf-8")
-    jsonstrs = json.loads(data)
+def get_blog_data_list(response):
+    all_data = json.loads(response.read().decode("utf-8"))
     past_time = load_execution_datetime()
-    urls = [
-        jsonstr["url"]
-        for jsonstr in jsonstrs
+    blog_data_list = [
+        data
+        for data in all_data
         if datetime.datetime.strptime(
-            jsonstr["created_at"], "%Y-%m-%dT%H:%M:%S+09:00"
+            data["created_at"], "%Y-%m-%dT%H:%M:%S+09:00"
         )  # noqa E501
         > past_time
     ]
-    return urls
+    return blog_data_list
 
 
 def connect_twitter():
@@ -65,14 +65,23 @@ def tweet(message):
 def tweet_qiita_url():
     PAGE = "1"
     PAR_PAGE = "10"
+    HASH_TAG = "\n#プログラミング "
+
     for USER_ID in load_user_ids():
         response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
-        urls = get_urls(response)
-        print(USER_ID + ": ", end="")
-        print(urls)
-        for url in urls:
-            print(url)
-            # tweet(url)
+        blog_data_list = get_blog_data_list(response)
+
+        for blog_data in blog_data_list:
+            msg = blog_data["title"] + "\n" + blog_data["url"]
+            for tags in blog_data["tags"]:
+                if len(msg + HASH_TAG + "#" + tags["name"] + " ") > 144:
+                    break
+                else:
+                    HASH_TAG += "#" + tags["name"] + " "
+
+            msg += HASH_TAG.strip(" ")
+            tweet(msg)
+            sleep(3600)
 
 
 def write_execution_datetime():
