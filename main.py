@@ -21,13 +21,20 @@ def connect_qiita(uid, page, ppage):
     return res
 
 
-def get_url(response):
-    # print(response.status, response.reason)
+def get_urls(response):
+    print(response)
     data = response.read().decode("utf-8")
-    jsonstr = json.loads(data)
-    # print(json.dumps(jsonstr, indent=4))
-    url = jsonstr[0]["url"]
-    return url
+    jsonstrs = json.loads(data)
+    past_time = load_execution_datetime()
+    urls = [
+        jsonstr["url"]
+        for jsonstr in jsonstrs
+        if datetime.datetime.strptime(
+            jsonstr["created_at"], "%Y-%m-%dT%H:%M:%S+09:00"
+        )  # noqa E501
+        > past_time
+    ]
+    return urls
 
 
 def connect_twitter():
@@ -64,23 +71,31 @@ def load_execution_datetime():
     path = pathlib.Path("exexcution_datetime.txt")
     try:
         datetime_str = path.read_text()
-        datetime_dt = datetime.datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+        datetime_dt = datetime.datetime.strptime(
+            datetime_str, "%Y-%m-%d %H:%M:%S"
+        )  # noqa #501
+        return datetime_dt
     except FileNotFoundError:
-        pass
+        return datetime.datetime(2018, 12, 1, 0, 0, 0)
+
+
+def tweet_qiita_url():
+    PAGE = "1"
+    PAR_PAGE = "10"
+    for USER_ID in load_user_ids():
+        response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
+        urls = get_urls(response)
+        import ipdb
+
+        ipdb.set_trace()
+        print(urls)
+        # for url in urls:
+        #     tweet(url)
 
 
 def main():
-    user_ids = load_user_ids()
-    load_execution_datetime()
     write_execution_datetime()
-    USER_ID = "macky4"
-    PAGE = "1"
-    PAR_PAGE = "10"
-
-    # response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
-    # url = get_url(response)
-    # msg = url
-    # tweet(msg)
+    tweet_qiita_url()
 
 
 if __name__ == "__main__":
