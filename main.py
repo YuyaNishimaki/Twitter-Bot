@@ -99,7 +99,7 @@ def load_execution_datetime():
         )  # noqa #501
         return datetime_dt
     except FileNotFoundError:
-        return datetime.datetime(2018, 12, 1, 0, 0, 0)
+        return datetime.datetime(2018, 12, 10, 0, 0, 0)
 
 
 def delete_execution_datetime():
@@ -110,7 +110,6 @@ def delete_execution_datetime():
 def main():
     tweet_qiita_url()
     write_execution_datetime()
-    delete_execution_datetime()
 
 
 if __name__ == "__main__":
