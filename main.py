@@ -18,11 +18,19 @@ def connect_qiita(uid, page, ppage):
         + ppage,  # noqa E501
     )
     res = conn.getresponse()
+    assert res.status == 200, "Status Error"
     return res
 
 
+def load_user_ids():
+    path = pathlib.Path("user_ids.txt")
+    user_ids = [user_id.strip() for user_id in path.read_text().split()]
+
+    print(user_ids)
+    return user_ids
+
+
 def get_urls(response):
-    print(response)
     data = response.read().decode("utf-8")
     jsonstrs = json.loads(data)
     past_time = load_execution_datetime()
@@ -54,11 +62,17 @@ def tweet(message):
     t.statuses.update(status=message)
 
 
-def load_user_ids():
-    path = pathlib.Path("user_ids.txt")
-    user_ids = [user_id.strip() for user_id in path.read_text().split()]
-
-    return user_ids
+def tweet_qiita_url():
+    PAGE = "1"
+    PAR_PAGE = "10"
+    for USER_ID in load_user_ids():
+        response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
+        urls = get_urls(response)
+        print(USER_ID + ": ", end="")
+        print(urls)
+        for url in urls:
+            print(url)
+            # tweet(url)
 
 
 def write_execution_datetime():
@@ -79,23 +93,15 @@ def load_execution_datetime():
         return datetime.datetime(2018, 12, 1, 0, 0, 0)
 
 
-def tweet_qiita_url():
-    PAGE = "1"
-    PAR_PAGE = "10"
-    for USER_ID in load_user_ids():
-        response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
-        urls = get_urls(response)
-        import ipdb
-
-        ipdb.set_trace()
-        print(urls)
-        # for url in urls:
-        #     tweet(url)
+def delete_execution_datetime():
+    path = pathlib.Path("exexcution_datetime.txt")
+    path.unlink()
 
 
 def main():
-    write_execution_datetime()
     tweet_qiita_url()
+    write_execution_datetime()
+    delete_execution_datetime()
 
 
 if __name__ == "__main__":
