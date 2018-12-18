@@ -1,5 +1,5 @@
 .env
-__pycache__/config.cpython-37.pyc
+__pycache__/
 user_ids.txt
 exexcution_datetime.txt
 venv/
