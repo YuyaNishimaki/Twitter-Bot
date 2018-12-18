@@ -2,6 +2,8 @@ import config
 from twitter import Twitter, OAuth
 import http.client
 import json
+import datetime
+import pathlib
 
 
 def connect_qiita(uid, page, ppage):
@@ -46,15 +48,31 @@ def tweet(message):
 
 
 def load_user_ids():
-    path = "user_ids.txt"
-    with open(path, "r", encoding="utf-8") as f:
-        user_ids = [s.strip() for s in f.readlines()]
+    path = pathlib.Path("user_ids.txt")
+    user_ids = [user_id.strip() for user_id in path.read_text().split()]
 
     return user_ids
 
 
+def write_execution_datetime():
+    path = pathlib.Path("exexcution_datetime.txt")
+    dt_now = datetime.datetime.now()
+    path.write_text(dt_now.strftime("%Y-%m-%d %H:%M:%S"))
+
+
+def load_execution_datetime():
+    path = pathlib.Path("exexcution_datetime.txt")
+    try:
+        datetime_str = path.read_text()
+        datetime_dt = datetime.datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+    except FileNotFoundError:
+        pass
+
+
 def main():
     user_ids = load_user_ids()
+    load_execution_datetime()
+    write_execution_datetime()
     USER_ID = "macky4"
     PAGE = "1"
     PAR_PAGE = "10"
