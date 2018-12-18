@@ -71,6 +71,7 @@ def tweet_qiita_url():
         response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
         blog_data_list = get_blog_data_list(response)
 
+        post = 0
         for blog_data in blog_data_list:
             msg = blog_data["title"] + "\n" + blog_data["url"]
             for tags in blog_data["tags"]:
@@ -81,6 +82,17 @@ def tweet_qiita_url():
 
             msg += HASH_TAG.strip(" ")
             tweet(msg)
+            post += 1
+            print(
+                USER_ID
+                + ": "
+                + blog_data["url"]
+                + "("
+                + str(post)
+                + "/"
+                + str(len(blog_data_list))
+                + ")"
+            )
             sleep(3600)
 
 
