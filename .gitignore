@@ -2,3 +2,5 @@
 __pycache__/config.cpython-37.pyc
 user_ids.txt
 exexcution_datetime.txt
+venv/
+.DS_Store
