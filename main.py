@@ -45,15 +45,24 @@ def tweet(message):
     t.statuses.update(status=message)
 
 
+def load_user_ids():
+    path = "user_ids.txt"
+    with open(path, "r", encoding="utf-8") as f:
+        user_ids = [s.strip() for s in f.readlines()]
+
+    return user_ids
+
+
 def main():
+    user_ids = load_user_ids()
     USER_ID = "macky4"
     PAGE = "1"
     PAR_PAGE = "10"
 
-    response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
-    url = get_url(response)
-    msg = url
-    tweet(msg)
+    # response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
+    # url = get_url(response)
+    # msg = url
+    # tweet(msg)
 
 
 if __name__ == "__main__":
