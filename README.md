@@ -18,7 +18,7 @@ git commit -m "commit message"
 git push heroku master
 ```
 
-## プログラム説明
+## プログラム説明
 - Procfile・requirements.txt・index.py・runtime.txt\
 デプロイする時に追加で必要なファイル群。
 
@@ -29,4 +29,4 @@ QiitaのユーザID一覧。ユーザに変更があれば、適宜更新する�
 すでに投稿済の学びブログのURLリスト。
 
 - execution_datetime.py\
-前回スクリプトを実行した日時の記録や、読み込みを行う。
+前回スクリプトを実行した日時の記録や、読み込みを行う。
