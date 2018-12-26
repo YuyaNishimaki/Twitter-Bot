@@ -4,6 +4,7 @@ attrs==18.2.0
 backcall==0.1.0
 beautifulsoup4==4.6.3
 black==18.9b0
+bottle==0.12.16
 Click==7.0
 decorator==4.3.0
 ipdb==0.11

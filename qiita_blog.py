@@ -33,14 +33,14 @@ def load_user_ids():
 
 def get_blog_data_list(response):
     all_data = json.loads(response.read().decode("utf-8"))
-    past_time = load()
+    past_datetime = load()
     blog_data_list = [
         data
         for data in all_data
         if datetime.datetime.strptime(
             data["created_at"], "%Y-%m-%dT%H:%M:%S+09:00"
         )  # noqa E501
-        > past_time
+        > past_datetime
     ]
     return blog_data_list
 

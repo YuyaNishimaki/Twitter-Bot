@@ -1,7 +1,4 @@
 .env
 __pycache__/
-user_ids.txt
-exexcution_datetime.txt
 venv/
 .DS_Store
-tweeted_learning_blog_urls.txt
