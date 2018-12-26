@@ -14,7 +14,7 @@ def get_learning_blog_urls():
         ).a.get(  # noqa E501
             "href"
         )
-        for i in range(1, 13)
+        for i in range(1, 4)
     ]
     print(urls)
     return urls
@@ -33,19 +33,22 @@ def load_tweeted_url():
 
 
 def tweet_learning_blog_url():
-    post = 0
     HASH_TAG = "\n#プログラミング #インターン\n"
     urls = get_learning_blog_urls()
 
-    for url in urls:
+    for i, url in enumerate(urls):
         if url not in load_tweeted_url():
             soup = BeautifulSoup(request.urlopen(url).read(), "html.parser")
-            title = soup.select_one("#Single-content > div > div.single-title > h2")
+            title = soup.select_one(
+                "#Single-content > div > div.single-title > h2"
+            )  # noqa #501
             tweet(title.text + "\n\n" + HASH_TAG + url)
             write_tweeted_url(url)
 
-            post += 1
-            print(url + "(" + str(post) + "/" + str(len(urls)) + ")")
-            sleep(3600)
+            print(url + "(" + str(i + 1) + "/" + str(len(urls)) + ")")
+            if (i + 1) == len(url):
+                break
+            else:
+                sleep(7200)
         else:
             continue

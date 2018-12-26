@@ -54,8 +54,7 @@ def tweet_qiita_url():
         response = connect_qiita(USER_ID, PAGE, PAR_PAGE)
         blog_data_list = get_blog_data_list(response)
 
-        post = 0
-        for blog_data in blog_data_list:
+        for i, blog_data in enumerate(blog_data_list):
             msg = blog_data["title"] + "\n\n"
             for tags in blog_data["tags"]:
                 if len(msg + HASH_TAG + "#" + tags["name"] + " ") > 144:
@@ -63,17 +62,16 @@ def tweet_qiita_url():
                 else:
                     HASH_TAG += "#" + tags["name"] + " "
 
-            msg += HASH_TAG.strip(" ") + blog_data["url"]
+            msg += HASH_TAG.strip(" ") + "\n" + blog_data["url"]
             tweet(msg)
-            post += 1
             print(
                 USER_ID
                 + ": "
                 + blog_data["url"]
                 + "("
-                + str(post)
+                + str(i + 1)
                 + "/"
                 + str(len(blog_data_list))
                 + ")"
             )
-            sleep(3600)
+            sleep(1800)

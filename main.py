@@ -5,8 +5,10 @@ from execution_datetime import write
 
 def main():
     tweet_qiita_url()
-    tweet_learning_blog_url()
     write()
+    print("Qiita終了")
+    tweet_learning_blog_url()
+    print("学びブログ終了")
 
 
 if __name__ == "__main__":
