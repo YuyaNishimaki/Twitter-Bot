@@ -1,18 +1,20 @@
-import os
 import datetime
+import pathlib
 
 
 def write():
+    path = pathlib.Path("exexcution_datetime.txt")
     dt_now = datetime.datetime.now()
-    os.environ["PAST_DATETIME"] = dt_now.strftime("%Y-%m-%d %H:%M:%S")
+    path.write_text(dt_now.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 def load():
-    PAST_DATETIME = datetime.datetime(2018, 12, 25, 0, 0, 0).strftime(
-        "%Y-%m-%d %H:%M:%S"
-    )
-    datetime_str = os.environ.get("PAST_DATETIME", PAST_DATETIME)
-    datetime_dt = datetime.datetime.strptime(
-        datetime_str, "%Y-%m-%d %H:%M:%S"
-    )  # noqa #501
-    return datetime_dt
+    path = pathlib.Path("exexcution_datetime.txt")
+    try:
+        datetime_str = path.read_text()
+        datetime_dt = datetime.datetime.strptime(
+            datetime_str, "%Y-%m-%d %H:%M:%S"
+        )  # noqa #501
+        return datetime_dt
+    except FileNotFoundError:
+        return datetime.datetime(2018, 12, 29, 0, 0, 0)
