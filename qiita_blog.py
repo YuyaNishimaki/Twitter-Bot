@@ -57,10 +57,11 @@ def tweet_qiita_url():
         for i, blog_data in enumerate(blog_data_list):
             msg = blog_data["title"] + "\n\n"
             for tags in blog_data["tags"]:
-                if len(msg + HASH_TAG + "#" + tags["name"] + " ") > 144:
-                    break
-                else:
-                    HASH_TAG += "#" + tags["name"] + " "
+                if not tags["name"] == "プログラミング":
+                    if len(msg + HASH_TAG + "#" + tags["name"] + " ") > 144:
+                        break
+                    else:
+                        HASH_TAG += "#" + tags["name"] + " "
 
             msg += HASH_TAG.strip(" ") + "\n" + blog_data["url"]
             tweet(msg)
